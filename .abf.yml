@@ -1,3 +1,5 @@
-sources:
-  python-3.4.0-docs-html.tar.bz2: d6e8f45219353b128f002f3a7311ec4e08c0ca49
+removed_sources:
   Python-3.4.4.tar.xz: 0e4c9265a2ab0004ac51f0010d47c22ef4c1640c
+sources:
+  Python-3.4.8.tar.xz: 65d62d3f62ade072a84eb64eca4490b940c73542
+  python-3.4.8-docs-html.tar.bz2: 115cbd3b038c610054ae0574360d85e025036e69
