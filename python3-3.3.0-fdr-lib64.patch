@@ -1,14 +1,6 @@
-commit e4bf77277a970ca9ac08b1ecf03ba59bdfdc1b43
-Author: Philippe Makowski <pmakowski@espelida.com>
-Date:   Sun Jul 3 14:25:39 2016 +0200
-
-    fdr-lib64
-
-diff --git a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
-index 67db007..8174192 100644
---- a/Lib/distutils/command/install.py
-+++ b/Lib/distutils/command/install.py
-@@ -30,14 +30,14 @@ WINDOWS_SCHEME = {
+--- Python-3.4.1/Lib/distutils/command/install.py.lib64	2014-05-19 07:19:37.000000000 +0200
++++ Python-3.4.1/Lib/distutils/command/install.py	2014-06-12 16:30:38.864248876 +0200
+@@ -45,14 +45,14 @@ else:
  INSTALL_SCHEMES = {
      'unix_prefix': {
          'purelib': '$base/lib/python$py_version_short/site-packages',
@@ -25,11 +17,9 @@ index 67db007..8174192 100644
          'headers': '$base/include/python/$dist_name',
          'scripts': '$base/bin',
          'data'   : '$base',
-diff --git a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
-index 573724d..6e58533 100644
---- a/Lib/distutils/sysconfig.py
-+++ b/Lib/distutils/sysconfig.py
-@@ -132,8 +132,12 @@ def get_python_lib(plat_specific=0, standard_lib=0, prefix=None):
+--- Python-3.4.1/Lib/distutils/sysconfig.py.lib64	2014-05-19 07:19:38.000000000 +0200
++++ Python-3.4.1/Lib/distutils/sysconfig.py	2014-06-12 16:30:38.864248876 +0200
+@@ -141,8 +141,12 @@ def get_python_lib(plat_specific=0, stan
              prefix = plat_specific and EXEC_PREFIX or PREFIX
  
      if os.name == "posix":
@@ -43,11 +33,9 @@ index 573724d..6e58533 100644
          if standard_lib:
              return libpython
          else:
-diff --git a/Lib/site.py b/Lib/site.py
-index 3f78ef5..ad1033e 100644
---- a/Lib/site.py
-+++ b/Lib/site.py
-@@ -303,11 +303,15 @@ def getsitepackages(prefixes=None):
+--- Python-3.4.1/Lib/site.py.lib64	2014-06-12 16:30:38.864248876 +0200
++++ Python-3.4.1/Lib/site.py	2014-06-12 16:32:54.348555089 +0200
+@@ -304,12 +304,16 @@ def getsitepackages(prefixes=None):
          seen.add(prefix)
  
          if os.sep == '/':
@@ -57,16 +45,15 @@ index 3f78ef5..ad1033e 100644
              sitepackages.append(os.path.join(prefix, "lib",
                                          "python" + sys.version[:3],
                                          "site-packages"))
+             sitepackages.append(os.path.join(prefix, "lib", "site-python"))
          else:
              sitepackages.append(prefix)
 +            sitepackages.append(os.path.join(prefix, "lib64", "site-packages"))
              sitepackages.append(os.path.join(prefix, "lib", "site-packages"))
          if sys.platform == "darwin":
              # for framework builds *only* we add the standard Apple
-diff --git a/Lib/sysconfig.py b/Lib/sysconfig.py
-index 9c34be0..31bc2ed 100644
---- a/Lib/sysconfig.py
-+++ b/Lib/sysconfig.py
+--- Python-3.4.1/Lib/sysconfig.py.lib64	2014-05-19 07:19:38.000000000 +0200
++++ Python-3.4.1/Lib/sysconfig.py	2014-06-12 16:30:38.865248863 +0200
 @@ -20,10 +20,10 @@ __all__ = [
  
  _INSTALL_SCHEMES = {
@@ -95,26 +82,30 @@ index 9c34be0..31bc2ed 100644
          'include': '{userbase}/include/python{py_version_short}',
          'scripts': '{userbase}/bin',
          'data': '{userbase}',
-diff --git a/Lib/test/test_site.py b/Lib/test/test_site.py
-index da20a3d..f38ce06 100644
---- a/Lib/test/test_site.py
-+++ b/Lib/test/test_site.py
-@@ -248,8 +248,8 @@ class HelperFunctionsTests(unittest.TestCase):
-             self.assertEqual(dirs[1], wanted)
+--- Python-3.4.1/Lib/test/test_site.py.lib64	2014-05-19 07:19:38.000000000 +0200
++++ Python-3.4.1/Lib/test/test_site.py	2014-06-12 16:30:38.864248876 +0200
+@@ -243,12 +243,15 @@ class HelperFunctionsTests(unittest.Test
+             self.assertEqual(dirs[2], wanted)
          elif os.sep == '/':
              # OS X non-framwework builds, Linux, FreeBSD, etc
--            self.assertEqual(len(dirs), 1)
+-            self.assertEqual(len(dirs), 2)
 -            wanted = os.path.join('xoxo', 'lib', 'python' + sys.version[:3],
-+            self.assertEqual(len(dirs), 2)
++            self.assertEqual(len(dirs), 3)
 +            wanted = os.path.join('xoxo', 'lib64', 'python' + sys.version[:3],
                                    'site-packages')
              self.assertEqual(dirs[0], wanted)
+-            wanted = os.path.join('xoxo', 'lib', 'site-python')
++            wanted = os.path.join('xoxo', 'lib', 'python' + sys.version[:3],
++                                  'site-packages')
+             self.assertEqual(dirs[1], wanted)
++            wanted = os.path.join('xoxo', 'lib', 'site-python')
++            self.assertEqual(dirs[2], wanted)
          else:
-diff --git a/Makefile.pre.in b/Makefile.pre.in
-index 87528a0..99b6bb9 100644
---- a/Makefile.pre.in
-+++ b/Makefile.pre.in
-@@ -125,7 +125,7 @@ LIBDIR=		@libdir@
+             # other platforms
+             self.assertEqual(len(dirs), 2)
+--- Python-3.4.1/Makefile.pre.in.lib64	2014-05-19 07:19:39.000000000 +0200
++++ Python-3.4.1/Makefile.pre.in	2014-06-12 16:30:38.864248876 +0200
+@@ -115,7 +115,7 @@ LIBDIR=		@libdir@
  MANDIR=		@mandir@
  INCLUDEDIR=	@includedir@
  CONFINCLUDEDIR=	$(exec_prefix)/include
@@ -123,16 +114,25 @@ index 87528a0..99b6bb9 100644
  ABIFLAGS=	@ABIFLAGS@
  
  # Detailed destination directories
-diff --git a/Modules/getpath.c b/Modules/getpath.c
-index 18deb60..27ca814 100644
---- a/Modules/getpath.c
-+++ b/Modules/getpath.c
+--- Python-3.4.1/Modules/getpath.c.lib64	2014-05-19 07:19:39.000000000 +0200
++++ Python-3.4.1/Modules/getpath.c	2014-06-12 16:31:35.644539024 +0200
+@@ -118,8 +118,8 @@
+ #endif
+ 
+ #ifndef PYTHONPATH
+-#define PYTHONPATH PREFIX "/lib/python" VERSION ":" \
+-              EXEC_PREFIX "/lib/python" VERSION "/lib-dynload"
++#define PYTHONPATH PREFIX "/lib64/python" VERSION ":" \
++              EXEC_PREFIX "/lib64/python" VERSION "/lib-dynload"
+ #endif
+ 
+ #ifndef LANDMARK
 @@ -494,7 +494,7 @@ calculate_path(void)
-     _pythonpath = Py_DecodeLocale(PYTHONPATH, NULL);
-     _prefix = Py_DecodeLocale(PREFIX, NULL);
-     _exec_prefix = Py_DecodeLocale(EXEC_PREFIX, NULL);
--    lib_python = Py_DecodeLocale("lib/python" VERSION, NULL);
-+    lib_python = Py_DecodeLocale("lib64/python" VERSION, NULL);
+     _pythonpath = _Py_char2wchar(PYTHONPATH, NULL);
+     _prefix = _Py_char2wchar(PREFIX, NULL);
+     _exec_prefix = _Py_char2wchar(EXEC_PREFIX, NULL);
+-    lib_python = _Py_char2wchar("lib/python" VERSION, NULL);
++    lib_python = _Py_char2wchar("lib64/python" VERSION, NULL);
  
      if (!_pythonpath || !_prefix || !_exec_prefix || !lib_python) {
          Py_FatalError(
@@ -154,20 +154,18 @@ index 18deb60..27ca814 100644
      }
      /* If we found EXEC_PREFIX do *not* reduce it!  (Yet.) */
  
-diff --git a/setup.py b/setup.py
-index 280766a..a8cee56 100644
---- a/setup.py
-+++ b/setup.py
-@@ -492,7 +492,7 @@ class PyBuildExt(build_ext):
-         # directories (i.e. '.' and 'Include') must be first.  See issue
-         # 10520.
-         if not cross_compiling:
--            add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib')
-+            add_dir_to_list(self.compiler.library_dirs, '/usr/local/lib64')
-             add_dir_to_list(self.compiler.include_dirs, '/usr/local/include')
-         # only change this for cross builds for 3.3, issues on Mageia
-         if cross_compiling:
-@@ -780,11 +780,11 @@ class PyBuildExt(build_ext):
+--- Python-3.4.1/setup.py.lib64	2014-06-12 16:30:38.863248888 +0200
++++ Python-3.4.1/setup.py	2014-06-12 16:30:38.864248876 +0200
+@@ -381,7 +381,7 @@ class PyBuildExt(build_ext):
+ 
+         if multiarch_path_component != '':
+             add_dir_to_list(self.compiler.library_dirs,
+-                            '/usr/lib/' + multiarch_path_component)
++                            '/usr/lib64/' + multiarch_path_component)
+             add_dir_to_list(self.compiler.include_dirs,
+                             '/usr/include/' + multiarch_path_component)
+             return
+@@ -722,11 +722,11 @@ class PyBuildExt(build_ext):
              elif curses_library:
                  readline_libs.append(curses_library)
              elif self.compiler.find_library_file(lib_dirs +
@@ -181,7 +179,7 @@ index 280766a..a8cee56 100644
                                     extra_link_args=readline_extra_link_args,
                                     libraries=readline_libs) )
          else:
-@@ -821,8 +821,8 @@ class PyBuildExt(build_ext):
+@@ -763,8 +763,8 @@ class PyBuildExt(build_ext):
              if krb5_h:
                  ssl_incs += krb5_h
          ssl_libs = find_library_file(self.compiler, 'ssl',lib_dirs,
