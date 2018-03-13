@@ -63,6 +63,7 @@ BuildRequires:	readline-devel
 BuildRequires:	pkgconfig(expat)
 BuildRequires:	pkgconfig(libffi) >= 3.1
 BuildRequires:	pkgconfig(libtirpc)
+BuildRequires:	pkgconfig(libnsl)
 BuildRequires:	pkgconfig(ncursesw)
 BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(sqlite3)
