@@ -1,5 +1,6 @@
 removed_sources:
   Python-3.4.4.tar.xz: 0e4c9265a2ab0004ac51f0010d47c22ef4c1640c
-sources:
   Python-3.4.8.tar.xz: 65d62d3f62ade072a84eb64eca4490b940c73542
-  python-3.4.8-docs-html.tar.bz2: 115cbd3b038c610054ae0574360d85e025036e69
+sources:
+  Python-3.4.9.tar.xz: 83ea4018f6e5f1db87c4e54c8a48ba6a8350abd4
+  python-3.4.9-docs-html.tar.bz2: 08c8cc82f648c5eaa02a0a987a94e6429fb3252a
