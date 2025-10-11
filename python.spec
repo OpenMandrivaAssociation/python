@@ -8,7 +8,7 @@
 # Python modules aren't linked to libpython%{dirver}
 %define _disable_ld_no_undefined 1
 
-%define docver %{version}
+%define docver %{version}%{?pre:%{pre}}
 %define dirver %(echo %{version} |cut -d. -f1-2)
 %define familyver 3
 
@@ -102,7 +102,7 @@ Name:		python
 # adapt the other packages.
 # (See the pyup script in the python package source directory
 # for an example of how to update)
-Version:	3.13.3
+Version:	3.14.0
 Release:	%{?pre:0.%{pre}.}1
 License:	Modified CNRI Open Source License
 Group:		Development/Python
@@ -169,9 +169,6 @@ Provides:	python3egg(distribute)
 %patchlist
 https://src.fedoraproject.org/rpms/python3.13/raw/rawhide/f/00251-change-user-install-location.patch
 https://src.fedoraproject.org/rpms/python3.11/raw/rawhide/f/00328-pyc-timestamp-invalidation-mode.patch
-https://src.fedoraproject.org/rpms/python3.13/raw/rawhide/f/00454-invoke-regen-token-rst-with-rstfile-as-an-argument.patch
-https://src.fedoraproject.org/rpms/python3.13/raw/rawhide/f/00456-find-the-correct-group-name-in-test_group_no_follow_symlinks.patch
-https://src.fedoraproject.org/rpms/python3.13/raw/rawhide/f/00459-apply-intel-control-flow-technology-for-x86-64.patch
 
 python-3.6.2-clang-5.0.patch
 Python-3.8.0-c++.patch
@@ -562,10 +559,12 @@ find html -type f |xargs chmod 0644
 # HACK: build fails without this (TODO: investigate rpm)
 %dir %{_libdir}/python*
 %{_libdir}/python*/LICENSE.txt
+%{_libdir}/python%{dirver}/*.json
 %{_libdir}/python%{dirver}/*.py
 %{_libdir}/python%{dirver}/__pycache__
 %{_libdir}/python%{dirver}/asyncio
 %{_libdir}/python%{dirver}/collections
+%{_libdir}/python%{dirver}/compression
 %{_libdir}/python%{dirver}/concurrent
 %{_libdir}/python%{dirver}/ctypes
 %{_libdir}/python%{dirver}/curses
@@ -590,6 +589,7 @@ find html -type f |xargs chmod 0644
 %{_libdir}/python%{dirver}/re
 %{_libdir}/python%{dirver}/site-packages
 %{_libdir}/python%{dirver}/sqlite3
+%{_libdir}/python%{dirver}/string
 %{_libdir}/python%{dirver}/sysconfig
 %{_libdir}/python%{dirver}/tomllib
 %{_libdir}/python%{dirver}/unittest
