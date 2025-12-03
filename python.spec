@@ -102,7 +102,7 @@ Name:		python
 # adapt the other packages.
 # (See the pyup script in the python package source directory
 # for an example of how to update)
-Version:	3.14.0
+Version:	3.14.1
 Release:	%{?pre:0.%{pre}.}1
 License:	Modified CNRI Open Source License
 Group:		Development/Python
@@ -130,7 +130,6 @@ BuildRequires:	pkgconfig(openssl)
 BuildRequires:	pkgconfig(sqlite3)
 BuildRequires:	pkgconfig(zlib)
 BuildRequires:	pkgconfig(uuid)
-#BuildRequires:	python2
 %if %{with valgrind}
 BuildRequires:	valgrind-devel
 %endif
@@ -379,7 +378,6 @@ cd build
 	--enable-shared \
 	--enable-static \
 %if 0
-# Disabled for now, since it causes buildtime crashes with llvm 16.0.x
 	--enable-bolt \
 %endif
 %if %{cross_compiling}
@@ -401,13 +399,13 @@ export TMP="/tmp" TMPDIR="/tmp"
 # wipe 11 hours of tests
 rm -frv Lib/test/test_*
 %endif
-%make_build PYTHON=python2 -j1
+%make_build -j1
 
 %check
 # (misc) if the home is nfs mounted, rmdir fails
 export TMP="/tmp" TMPDIR="/tmp"
 
-# Currently (3.3.0-1), LOTS of tests fail, but python3 seems to work
+# Currently (3.3.0-1), LOTS of tests fail, but python seems to work
 # quite fine anyway. Chances are something in the testsuite itself is bogus.
 #make test TESTOPTS="-w -x test_linuxaudiodev -x test_nis -x test_shutil -x test_pyexpat -x test_minidom -x test_sax -x test_string -x test_str -x test_unicode -x test_userstring -x test_bytes -x test_distutils -x test_mailbox -x test_ioctl -x test_telnetlib -x test_strtod -x test_urllib2net -x test_runpy -x test_posix -x test_robotparser -x test_numeric_tower -x test_math -x test_cmath -x test_importlib -x test_import -x test_float -x test_strtod -x test_timeout"
 
