@@ -117,6 +117,7 @@ Source100:	%{name}.rpmlintrc
 BuildRequires:	autoconf
 BuildRequires:	autoconf-archive
 BuildRequires:	automake
+BuildRequires:	make
 BuildRequires:	pkgconfig(bzip2)
 BuildRequires:	db-devel
 BuildRequires:	gdbm-devel
@@ -525,7 +526,7 @@ install -m644 %{S:2} %{buildroot}%{_sysconfdir}/rpm/macros.d/
 install -m644 %{S:3} %{buildroot}%{_sysconfdir}/rpm/macros.d/
 install -D -m644 %{S:4} %{buildroot}%{_rpmmacrodir}/macros.buildsys.python
 # We are the default version...
-cat %{buildroot}%{_sysconfdir}/rpm/macros.d/python.macros <<'EOF'
+cat >%{buildroot}%{_sysconfdir}/rpm/macros.d/python.macros <<'EOF'
 %%pyver %%{python_version}
 EOF
 
