@@ -103,7 +103,7 @@ Name:		python
 # (See the pyup script in the python package source directory
 # for an example of how to update)
 Version:	3.14.2
-Release:	%{?pre:0.%{pre}.}2
+Release:	%{?pre:0.%{pre}.}3
 License:	Modified CNRI Open Source License
 Group:		Development/Python
 Url:		https://www.python.org/
@@ -212,7 +212,6 @@ Summary:	The libraries and header files needed for Python development
 Group:		Development/Python
 Requires:	%{name} = %{EVRD}
 Requires:	%{libname} = %{EVRD}
-Requires:	python-pkg-resources
 Provides:	%{name}-devel = %{EVRD}
 Provides:	%{name}3-devel = %{EVRD}
 Provides:	pkgconfig(python) = 3
