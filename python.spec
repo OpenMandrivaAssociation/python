@@ -103,7 +103,7 @@ Name:		python
 # (See the pyup script in the python package source directory
 # for an example of how to update)
 Version:	3.14.2
-Release:	%{?pre:0.%{pre}.}1
+Release:	%{?pre:0.%{pre}.}2
 License:	Modified CNRI Open Source License
 Group:		Development/Python
 Url:		https://www.python.org/
@@ -524,7 +524,9 @@ install -m644 %{S:2} %{buildroot}%{_sysconfdir}/rpm/macros.d/
 install -m644 %{S:3} %{buildroot}%{_sysconfdir}/rpm/macros.d/
 install -D -m644 %{S:4} %{buildroot}%{_rpmmacrodir}/macros.buildsys.python
 # We are the default version...
-sed -e 's,python3,python,g;s,py3,py,g' %{SOURCE2} >%{buildroot}%{_sysconfdir}/rpm/macros.d/python.macros
+cat %{buildroot}%{_sysconfdir}/rpm/macros.d/python.macros <<'EOF'
+%%pyver %%{python_version}
+EOF
 
 ln -s python3 %{buildroot}%{_bindir}/python
 ln -s pydoc3 %{buildroot}%{_bindir}/pydoc
