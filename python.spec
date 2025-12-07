@@ -116,6 +116,7 @@ Source100:	%{name}.rpmlintrc
 
 BuildRequires:	autoconf
 BuildRequires:	autoconf-archive
+BuildRequires:	automake
 BuildRequires:	pkgconfig(bzip2)
 BuildRequires:	db-devel
 BuildRequires:	gdbm-devel
