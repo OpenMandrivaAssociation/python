@@ -124,6 +124,12 @@ Conflicts:	%{libname}-devel < 3.1.2-4
 Conflicts:	%{devname} < 3.2.2-3
 Conflicts:	python-pyxml
 
+%if %{with pip}
+# ensurepip refuses to install the bootstrap pip if any pip already exists
+BuildConflicts:	python-pip-bootstrap
+BuildConflicts:	python%{dirver}dist(pip)
+%endif
+
 # Used to be separate packages, bundled with core now
 %rename	python-ctypes
 %rename	python-elementtree
