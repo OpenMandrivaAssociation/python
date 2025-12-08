@@ -43,67 +43,35 @@
 # pip not available if python package built with pip
 # * build without pip files lead to good package
 # * but next package lead to unpackaged pip files 
-# let's disable pip
-%bcond_with pip
+# let's disable pip except when bootstrapping
+%bcond_without pip
 
 Summary:	An interpreted, interactive object-oriented programming language
 Name:		python
 # WARNING
-# When updating to a new major version (e.g. 3.11 to 3.12, not 3.11.1
-# to 3.11.2), make sure you don't break dnf.
-# For dnf and abf-console-client to work, you have to rebuild the following packages against
-# the new version of python:
-#	[disable rpmlint for now -- it needs python-rpm. Set _nonzero_exit_pkgcheck_terminate_build to 0 in ~/.rpmmacros]
-#	python-setuptools (may need to be rebuilt twice to catch dependencies)
-#	file [for python-magic]
-#	rpm [for python-rpm]
-#	libdnf
-#	libcomps
-#	gpgme
-#	rpmlint
-#	[at this point you can re-enable rpmlint in ~/.rpmmacros]
-#	python-packaging
-#	python-parsing
-#	python-docutils
-#	python-alabaster
-#	python-pytz
-#	python-babel
-#	python-markupsafe
-#	python-jinja2
-#	python-pygments
-#	python-charset-normalizer
-#	python-idna
-#	python-imagesize
-#	python-urllib3
-#	python-certifi
-#	python-requests
-#	python-snowballstemmer
-#	python-sphinxcontrib-applehelp
-#	python-sphinxcontrib-devhelp
-#	python-sphinxcontrib-htmlhelp
-#	python-sphinxcontrib-jsmath
-#	python-sphinxcontrib-qthelp
-#	python-sphinxcontrib-serializinghtml
-#	python-sphinxcontrib-websupport
-#	python-sphinx
-#	python-bugzilla
-#	dnf
-#	python-six
-#	python-pip
-#	python-dateutil
-#	dbus-python
-#	dnf-plugins-core
-#	python-beaker
-#	python-yaml
-#	abf-console-client
-#	python-templated-dictionary
-#	mock
-# After getting all related packages into abf, run a mass build to
-# adapt the other packages.
-# (See the pyup script in the python package source directory
-# for an example of how to update)
+# When updating to a new major version (e.g. 3.14 to 3.15, not 3.14.2
+# to 3.14.3), you need to get components used by build systems up and
+# running before being able to build most other packages again.
+# When building a new major version:
+#	* replace rpmlint with the dummy version (rebuild rpmlint with rpmbuild --with dummy)
+#	* build python with the in-tree version of pip (rpmbuild --with pip) enabled
+#	* rebuild python-packaging
+#	* rebuild python-flit
+#		* force publishing in abf. There are several dependencies
+#		  that can't be fulfilled yet in python-flit, but for now
+#		  we only need the python-flit-core subpackage, and its
+#		  dependencies should be fine
+#	* rebuild python-setuptools
+#	* rebuild python-pip
+#	* [If you're building outside of abf, now is a good time to uninstall
+#	   python-pip-bootstrap and install the real python-pip]
+#	* rebuild meson
+#	* rebuild x11-proto-devel
+#	* rebuild file (contains libmagick python bindings)
+#	* rebuild rpm (contains python bindings)
+#	* restore rpmlint (rebuild rpmlint with rpmbuild --without dummy)
 Version:	3.14.2
-Release:	%{?pre:0.%{pre}.}3
+Release:	%{?pre:0.%{pre}.}4
 License:	Modified CNRI Open Source License
 Group:		Development/Python
 Url:		https://www.python.org/
@@ -160,12 +128,6 @@ Conflicts:	python-pyxml
 %rename	python-ctypes
 %rename	python-elementtree
 %rename	python-base
-%if %{with pip}
-%rename	python-setuptools
-%rename	python-pkg-resources
-Provides:	python3egg(setuptools)
-Provides:	python3egg(distribute)
-%endif
 
 %patchlist
 https://src.fedoraproject.org/rpms/python3.13/raw/rawhide/f/00251-change-user-install-location.patch
@@ -206,6 +168,18 @@ Obsoletes:	%{_lib}python3.3 < 3.3.2-2
 This packages contains Python shared object library.  Python is an
 interpreted, interactive, object-oriented programming language often
 compared to Tcl, Perl, Scheme or Java.
+
+%package pip-bootstrap
+Summary:	Small version of the pip utility useful for bootstrapping the full version
+Group:		Development/Python
+Requires:	%{name} = %{EVRD}
+# We don't want pip-bootstrap to provide things like
+# pythonX.YYdist(setuptools) -- we don't want it pulled
+# in after the normal versions are available
+AutoProv:	no
+
+%description pip-bootstrap
+Small version of the pip utility useful for bootstrapping the full version
 
 %package -n %{devname}
 Summary:	The libraries and header files needed for Python development
@@ -532,6 +506,9 @@ EOF
 ln -s python3 %{buildroot}%{_bindir}/python
 ln -s pydoc3 %{buildroot}%{_bindir}/pydoc
 ln -s python3-config %{buildroot}%{_bindir}/python-config
+%if %{with pip}
+ln -s pip3 %{buildroot}%{_bindir}/pip
+%endif
 
 # Fix permissions on docs
 find html -type d |xargs chmod 0755
@@ -609,22 +586,19 @@ find html -type f |xargs chmod 0644
 %if %{with valgrind}
 %{_libdir}/valgrind/valgrind-python3.supp
 %endif
+
 # pip bits
 %if %{with pip}
+%files pip-bootstrap
 %if "%{_libdir}" != "%{_prefix}/lib"
 # In the %{_libdir} == %{_prefix}/lib case, those are caught by
 # globs above.
 %dir %{_prefix}/lib/python%{dirver}
 %dir %{_prefix}/lib/python%{dirver}/site-packages
-%{_prefix}/lib/python%{dirver}/site-packages/__pycache__
-%{_prefix}/lib/python%{dirver}/site-packages/pkg_resources.py
-%{_prefix}/lib/python%{dirver}/site-packages/easy_install.py
 %{_prefix}/lib/python%{dirver}/site-packages/pip
-%{_prefix}/lib/python%{dirver}/site-packages/setuptools*
-%{_prefix}/lib/python%{dirver}/site-packages/_markerlib
 %{_prefix}/lib/python%{dirver}/site-packages/pip-*.dist-info
 %endif
-%{_bindir}/easy_install-%{dirver}
+%{_bindir}/pip
 %{_bindir}/pip3
 %{_bindir}/pip%{dirver}
 %endif
