@@ -48,12 +48,12 @@ Name:		python
 # When building a new major version:
 #	* replace rpmlint with the dummy version (rebuild rpmlint with rpmbuild --with dummy)
 #	* build python with the in-tree version of pip (rpmbuild --with pip) enabled
-#	* rebuild python-packaging
 #	* rebuild python-flit
-#		* force publishing in abf. There are several dependencies
-#		  that can't be fulfilled yet in python-flit, but for now
-#		  we only need the python-flit-core subpackage, and its
-#		  dependencies should be fine
+#		* You may have to force publishing in abf. There are several
+#		  dependencies that can't be fulfilled yet in python-flit,
+#		  but for now we only need the python-flit-core subpackage,
+#		  and its dependencies should be fine
+#	* rebuild python-packaging
 #	* rebuild python-setuptools
 #	* rebuild python-pip
 #	* [If you're building outside of abf, now is a good time to uninstall
