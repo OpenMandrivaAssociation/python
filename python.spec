@@ -82,6 +82,8 @@ Source3:	pybytecompile.macros
 Source4:	macros.buildsys.python
 Source100:	%{name}.rpmlintrc
 
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
 BuildRequires:	autoconf
 BuildRequires:	autoconf-archive
 BuildRequires:	automake
