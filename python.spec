@@ -340,6 +340,10 @@ EOF
 rm -fr Modules/expat
 rm -fr Modules/zlib
 
+# Fix the JIT
+LLVM_VERSION=$(clang --version |head -n1 |cut -d' ' -f2 |cut -d- -f1)
+sed -i -e "s,^_LLVM_VERSION =.*,_LLVM_VERSION = ${LLVM_VERSION/.*/},;s,^_EXTERNALS_LLVM_TAG =.*,_EXTERNALS_LLVM_TAG = \"llvm-${LLVM_VERSION}.0\"," Tools/jit/_llvm.py
+
 %build
 # Various violations, including in object.h
 # (tpg) https://maskray.me/blog/2021-05-09-fno-semantic-interposition
@@ -427,7 +431,8 @@ export TMP="/tmp" TMPDIR="/tmp"
 # wipe 11 hours of tests
 rm -frv Lib/test/test_*
 %endif
-%make_build -j1
+%make_build
+#-j1
 
 %check
 # (misc) if the home is nfs mounted, rmdir fails
