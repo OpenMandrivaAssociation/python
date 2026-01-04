@@ -20,13 +20,6 @@
 %define lib32name %mklib32name python %{api} %{major}
 %define dev32name %mklib32name python -d
 
-%if %{cross_compiling}
-# Because we currently miss libclang_rt.profile-riscv64.a
-# in crosscompilers, and python's build system builds
-# profiling code
-%define prefer_gcc 1
-%endif
-
 #define pre rc2
 
 %ifarch %{ix86} %{x86_64} ppc
@@ -71,7 +64,7 @@ Name:		python
 #	* rebuild rpm (contains python bindings)
 #	* restore rpmlint (rebuild rpmlint with rpmbuild --without dummy)
 Version:	3.14.2
-Release:	%{?pre:0.%{pre}.}4
+Release:	%{?pre:0.%{pre}.}5
 License:	Modified CNRI Open Source License
 Group:		Development/Python
 Url:		https://www.python.org/
@@ -345,6 +338,8 @@ export CONFIG_SITE="$(pwd)/config.site ${CONFIG_SITE}"
 %endif
 mkdir build
 cd build
+# --enable-optimizations is disabled when crosscompiling
+# because it enables PGO
 %configure \
 	--enable-ipv6 \
 	--with-dbmliborder=gdbm \
@@ -363,9 +358,6 @@ cd build
 %if 0
 	--enable-bolt \
 %endif
-%if %{cross_compiling}
-	--with-build-python=%{_bindir}/python \
-%endif
 	--with-lto=$LTO \
 	--with-pymalloc \
 	--enable-ipv6=yes \
@@ -374,7 +366,15 @@ cd build
 %if %{with valgrind}
 	--with-valgrind \
 %endif
+%ifarch %{x86_64} %{aarch64}
+	--with-tail-call-interp \
+	--enable-experimental-jit \
+%endif
+%if %{cross_compiling}
+	--with-build-python=%{_bindir}/python
+%else
 	--enable-optimizations
+%endif
 
 # (misc) if the home is nfs mounted, rmdir fails due to delay
 export TMP="/tmp" TMPDIR="/tmp"
