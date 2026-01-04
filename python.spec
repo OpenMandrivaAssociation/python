@@ -62,7 +62,52 @@ Name:		python
 #	* rebuild x11-proto-devel
 #	* rebuild file (contains libmagick python bindings)
 #	* rebuild rpm (contains python bindings)
+#	* rebuild rpmlint's dependencies (and their dependencies):
+#		* python-magic
+#		* python-tomli
+#		* python-tomli-w
+#		* python-pyxdg
+#		* python-zstandard
+#		* python-construct
+#		* python-pybeam
+#		* python-enchant
 #	* restore rpmlint (rebuild rpmlint with rpmbuild --without dummy)
+#	* rebuild mock's dependencies (and their dependencies):
+#		* python-wheel
+#		* python-poetry-core
+#		* python-pdm-backend
+#		* python-pbs-installer
+#		* python-pyproject_hooks
+#		* python-build
+#		* python-pathspec
+#		* python-typing-extensions
+#		* python-setuptools_scm
+#		* python-pluggy
+#		* python-trove-classifiers
+#		* python-hatchling
+#		* python-hatch-vcs
+#		* python-platformdirs
+#		* python-findpython
+#		* python-backoff
+#		* python-urllib3
+#		* python-certifi
+#		* python-cython
+#		* python-idna
+#		* python-charset-normalizer
+#		* python-requests
+#		* python-hatch-fancy-pypi-readme
+#		* python-cython
+#		* python-msgpack
+#		* python-distro
+#		* python-scikit-build
+#		* python-rapidfuzz
+#		* python-pygments
+#		* python-cachecontrol
+#		* python-cleo
+#		* python-dulwich
+#		* python-fastjsonschema
+#		* python-poetry
+#	* rebuild mock
 Version:	3.14.2
 Release:	%{?pre:0.%{pre}.}5
 License:	Modified CNRI Open Source License
