@@ -32,13 +32,6 @@
 # stuff like TCL/Tk when bootstrapping a new architecture
 %bcond_without tkinter
 
-# weird stuff
-# pip not available if python package built with pip
-# * build without pip files lead to good package
-# * but next package lead to unpackaged pip files 
-# let's disable pip except when bootstrapping
-%bcond_without pip
-
 Summary:	An interpreted, interactive object-oriented programming language
 Name:		python
 # WARNING
@@ -47,7 +40,6 @@ Name:		python
 # running before being able to build most other packages again.
 # When building a new major version:
 #	* replace rpmlint with the dummy version (rebuild rpmlint with rpmbuild --with dummy)
-#	* build python with the in-tree version of pip (rpmbuild --with pip) enabled
 #	* rebuild python-flit
 #		* You may have to force publishing in abf. There are several
 #		  dependencies that can't be fulfilled yet in python-flit,
@@ -163,12 +155,6 @@ Conflicts:	tkinter3 < %{EVRD}
 Conflicts:	%{libname}-devel < 3.1.2-4
 Conflicts:	%{devname} < 3.2.2-3
 Conflicts:	python-pyxml
-
-%if %{with pip}
-# ensurepip refuses to install the bootstrap pip if any pip already exists
-BuildConflicts:	python-pip-bootstrap
-BuildConflicts:	python%{dirver}dist(pip)
-%endif
 
 # Used to be separate packages, bundled with core now
 %rename	python-ctypes
@@ -392,11 +378,7 @@ cd build
 %configure \
 	--enable-ipv6 \
 	--with-dbmliborder=gdbm \
-%if %{with pip}
 	--with-ensurepip=install \
-%else
-	--without-ensurepip \
-%endif
 	--with-platlibdir=%{_lib} \
 	--with-system-expat \
 	--with-cxx-main="%{__cxx}" \
@@ -564,9 +546,25 @@ EOF
 ln -s python3 %{buildroot}%{_bindir}/python
 ln -s pydoc3 %{buildroot}%{_bindir}/pydoc
 ln -s python3-config %{buildroot}%{_bindir}/python-config
-%if %{with pip}
-ln -s pip3 %{buildroot}%{_bindir}/pip
+if ! [ -e %{buildroot}%{_bindir}/pip3 ]; then
+	# ensurepip is broken -- it checks the system outside the build root
+	# for a preexisting pip even when installing to a DESTDIR, and there
+	# is no way to force installation.
+	# But fortunately there is a relatively simple way to do what ensurepip
+	# should be doing.
+	ENSUREPATH="$(pwd)/Lib/ensurepip"
+	export PYTHONPATH="$(ls $ENSUREPATH/_bundled/pip-*.whl)"
+	cd build
+%if %{cross_compiling}
+	PYTHON=python
+%else
+	export LD_LIBRARY_PATH="$(pwd)"
+	PYTHON=./python
 %endif
+	$PYTHON -m pip install --root=%{buildroot} --ignore-installed --no-index --find-links="${ENSUREPATH}/_bundled/" pip
+	cd ..
+fi
+[ -e %{buildroot}%{_bindir}/pip ] || ln -s pip3 %{buildroot}%{_bindir}/pip
 
 # Fix permissions on docs
 find html -type d |xargs chmod 0755
@@ -646,7 +644,6 @@ find html -type f |xargs chmod 0644
 %endif
 
 # pip bits
-%if %{with pip}
 %files pip-bootstrap
 %if "%{_libdir}" != "%{_prefix}/lib"
 # In the %{_libdir} == %{_prefix}/lib case, those are caught by
@@ -659,7 +656,6 @@ find html -type f |xargs chmod 0644
 %{_bindir}/pip
 %{_bindir}/pip3
 %{_bindir}/pip%{dirver}
-%endif
 
 %files ensurepip
 %{_libdir}/python%{dirver}/ensurepip
