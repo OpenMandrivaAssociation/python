@@ -160,6 +160,7 @@ Conflicts:	python-pyxml
 %rename	python-ctypes
 %rename	python-elementtree
 %rename	python-base
+Provides:	python%(echo %{version}|cut -d. -f1-2)dist(configparser)
 
 %patchlist
 https://src.fedoraproject.org/rpms/python3.13/raw/rawhide/f/00251-change-user-install-location.patch
