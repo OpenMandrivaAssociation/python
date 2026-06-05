@@ -101,7 +101,7 @@ Name:		python
 #		* python-poetry
 #	* rebuild mock
 Version:	3.14.5
-Release:	%{?pre:0.%{pre}.}1
+Release:	%{?pre:0.%{pre}.}2
 License:	Modified CNRI Open Source License
 Group:		Development/Python
 Url:		https://www.python.org/
