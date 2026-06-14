@@ -100,8 +100,8 @@ Name:		python
 #		* python-fastjsonschema
 #		* python-poetry
 #	* rebuild mock
-Version:	3.14.5
-Release:	%{?pre:0.%{pre}.}2
+Version:	3.14.6
+Release:	%{?pre:0.%{pre}.}1
 License:	Modified CNRI Open Source License
 Group:		Development/Python
 Url:		https://www.python.org/
@@ -112,7 +112,6 @@ Source3:	pybytecompile.macros
 Source4:	macros.buildsys.python
 Source100:	%{name}.rpmlintrc
 
-BuildRequires:	libtool-base
 BuildRequires:	slibtool
 BuildRequires:	autoconf
 BuildRequires:	autoconf-archive
@@ -167,7 +166,6 @@ https://src.fedoraproject.org/rpms/python3.13/raw/rawhide/f/00251-change-user-in
 https://src.fedoraproject.org/rpms/python3.11/raw/rawhide/f/00328-pyc-timestamp-invalidation-mode.patch
 
 python-3.6.2-clang-5.0.patch
-Python-3.8.0-c++.patch
 # FIXME check if this is still needed (the code has changed a lot
 # and claims to support C++ now)
 #python-3.8.0-c++atomics.patch
