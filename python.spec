@@ -100,8 +100,8 @@ Name:		python
 #		* python-fastjsonschema
 #		* python-poetry
 #	* rebuild mock
-Version:	3.14.6
-Release:	%{?pre:0.%{pre}.}2
+Version:	3.14.7
+Release:	%{?pre:0.%{pre}.}1
 License:	Modified CNRI Open Source License
 Group:		Development/Python
 Url:		https://www.python.org/
@@ -310,7 +310,7 @@ This is only useful to test Python itself.
 %prep
 %autosetup -p1 -n Python-%{version}%{?pre:%{pre}}
 
-# OpenSSL 4.0 error-code table (not in 3.14.6 tarball; from CPython main / gh-148601)
+# OpenSSL 4.0 error-code table (not in 3.14.7 tarball; from CPython main / gh-148601)
 cp -p %{SOURCE5} Modules/_ssl_data_40.h
 
 # docs
