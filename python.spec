@@ -100,7 +100,7 @@ Name:		python
 #		* python-fastjsonschema
 #		* python-poetry
 #	* rebuild mock
-Version:	3.14.7
+Version:	3.14.8
 Release:	%{?pre:0.%{pre}.}1
 License:	Modified CNRI Open Source License
 Group:		Development/Python
@@ -164,8 +164,8 @@ Conflicts:	python-pyxml
 Provides:	python%(echo %{version}|cut -d. -f1-2)dist(configparser)
 
 %patchlist
-https://src.fedoraproject.org/rpms/python3.13/raw/rawhide/f/00251-change-user-install-location.patch
-https://src.fedoraproject.org/rpms/python3.11/raw/rawhide/f/00328-pyc-timestamp-invalidation-mode.patch
+00251-change-user-install-location.patch
+00328-pyc-timestamp-invalidation-mode.patch
 
 python-3.6.2-clang-5.0.patch
 # FIXME check if this is still needed (the code has changed a lot
