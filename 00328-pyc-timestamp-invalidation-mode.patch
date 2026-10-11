@@ -5,24 +5,24 @@ Subject: [PATCH] 00328: Restore pyc to TIMESTAMP invalidation mode as default
  in rpmbuild
 
 Since Fedora 31, the $SOURCE_DATE_EPOCH is set in rpmbuild to the latest
-%changelog date. This makes Python default to the CHECKED_HASH pyc
+changelog date. This makes Python default to the CHECKED_HASH pyc
 invalidation mode, bringing more reproducible builds traded for an import
 performance decrease. To avoid that, we don't default to CHECKED_HASH
 when $RPM_BUILD_ROOT is set (i.e. when we are building RPM packages).
+
+The test helpers live in test.support.os_helper since 3.15.
 
 See https://src.fedoraproject.org/rpms/redhat-rpm-config/pull-request/57#comment-27426
 Downstream only: only used when building RPM packages
 Ideally, we should talk to upstream and explain why we don't want this
 ---
- Lib/py_compile.py           | 3 ++-
- Lib/test/test_py_compile.py | 2 ++
+ Lib/py_compile.py              | 3 ++-
+ Lib/test/support/os_helper.py  | 2 ++
  2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/Lib/py_compile.py b/Lib/py_compile.py
-index 388614e51b..db52725016 100644
 --- a/Lib/py_compile.py
 +++ b/Lib/py_compile.py
-@@ -70,7 +70,8 @@ class PycInvalidationMode(enum.Enum):
+@@ -70,7 +70,8 @@
  
  
  def _get_default_invalidation_mode():
@@ -32,22 +32,20 @@ index 388614e51b..db52725016 100644
          return PycInvalidationMode.CHECKED_HASH
      else:
          return PycInvalidationMode.TIMESTAMP
-diff --git a/Lib/test/test_py_compile.py b/Lib/test/test_py_compile.py
-index 794d6436b6..322e072b61 100644
---- a/Lib/test/test_py_compile.py
-+++ b/Lib/test/test_py_compile.py
-@@ -19,6 +19,7 @@ def without_source_date_epoch(fxn):
+--- a/Lib/test/support/os_helper.py
++++ b/Lib/test/support/os_helper.py
+@@ -816,6 +816,7 @@
      def wrapper(*args, **kwargs):
-         with os_helper.EnvironmentVarGuard() as env:
+         with EnvironmentVarGuard() as env:
              env.unset('SOURCE_DATE_EPOCH')
 +            env.unset('RPM_BUILD_ROOT')
              return fxn(*args, **kwargs)
      return wrapper
  
-@@ -29,6 +30,7 @@ def with_source_date_epoch(fxn):
+@@ -831,6 +832,7 @@
      def wrapper(*args, **kwargs):
-         with os_helper.EnvironmentVarGuard() as env:
-             env['SOURCE_DATE_EPOCH'] = '123456789'
+         with EnvironmentVarGuard() as env:
+             env['SOURCE_DATE_EPOCH'] = str(epoch)
 +            env.unset('RPM_BUILD_ROOT')
              return fxn(*args, **kwargs)
      return wrapper
