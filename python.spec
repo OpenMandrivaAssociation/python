@@ -39,9 +39,18 @@ Name:		python
 # to 3.15.3), you need to get components used by build systems up and
 # running before being able to build most other packages again.
 # Publish the dummy rpmlint before the new python reaches the repo.
+# gdb has to be published without python support before that too.
+# basesystem-build requires /usr/bin/gdb-add-index, and a python-enabled
+# gdb is linked to the previous libpython. After that library leaves
+# the repository, no new build chroot can be installed.
+# If the new python was published first, republish the previous python,
+# publish gdb built without python, publish the new python again, then
+# publish gdb with python enabled.
 # When building a new major version:
 #	* replace rpmlint with the dummy version (rebuild rpmlint with rpmbuild --with dummy)
+#	* rebuild gdb with python support disabled, and publish it
 #	* update and publish python
+#	* rebuild gdb with python support enabled, and publish it
 #	* rebuild python-flit
 #		* You may have to force publishing in abf. There are several
 #		  dependencies that can't be fulfilled yet in python-flit,
