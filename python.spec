@@ -111,7 +111,7 @@ Name:		python
 #		* python-fastjsonschema
 #		* python-poetry
 #	* rebuild mock
-Version:	3.15.1
+Version:	3.15.2
 Release:	%{?pre:0.%{pre}.}1
 License:	Modified CNRI Open Source License
 Group:		Development/Python
