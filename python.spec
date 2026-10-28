@@ -183,6 +183,10 @@ python-3.6.2-clang-5.0.patch
 python-3.7.1-dont-build-testembed-with-c++.patch
 00201-fix-memory-leak-in-gdbm.patch
 python-3.13-disable-broken-sqlite-test.patch
+# Re-read the bytecode after stop_tracing_and_jit(). A finalizer during
+# optimize can invalidate the current executor and leave ENTER_EXECUTOR
+# pointing at a NULL slot.
+python-3.15-jit-stop-tracing-reread.patch
 
 %description
 Python is an interpreted, interactive, object-oriented programming
